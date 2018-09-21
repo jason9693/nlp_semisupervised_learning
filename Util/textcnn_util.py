@@ -3,7 +3,7 @@ from tensorflow.python.keras.preprocessing.sequence import pad_sequences
 import pandas as pd
 import random
 import numpy as np
-from .custom_konlpy import Okt as Twitter
+from konlpy.tag import Okt as Twitter
 from gensim.models import Word2Vec as w2v
 import params as par
 import Util.kor_char_parser as parser
