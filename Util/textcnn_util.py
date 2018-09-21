@@ -8,10 +8,6 @@ from gensim.models import Word2Vec as w2v
 import params as par
 import Util.kor_char_parser as parser
 
-def class_unmapping():
-    return list(par.class_map.keys())
-classification = par.class_map
-
 class proccessing_util:
     def __init__(self,model=None):
         if model is not None:
@@ -77,77 +73,6 @@ class proccessing_util:
         # print(np.shape(embedding_matrix[index_list]))
         return embedding_matrix[index_list]
 
-
-def c2v_div_dataset(dataframe,embedding_dim,train_size,max_seq_length=par.max_length):
-
-    range_list = np.array(range(dataframe.__len__()))
-
-    train_index = random.sample(range_list.tolist(), k=train_size)
-    train_index.sort()
-    #print(train_index)
-
-    mask_index = np.ones([dataframe.__len__()])
-    mask_index[train_index] = 0
-
-    test_index = range_list[mask_index == 1].tolist()
-    text_list = proccessing_util().c2v_preprocess(dataframe['text'], embedding_dim, max_seq_length)
-    try:
-        class_list = np.array([classification[i] for i in dataframe['class']])
-    except:
-        return (text_list[train_index], text_list[test_index]) # (train_X, test_X)
-
-
-
-    #print(test_index)
-
-    #print(range_list[test_index].tolist())
-    return (class_list[train_index],
-            text_list[train_index],
-            class_list[test_index],
-            text_list[test_index],
-            [train_index,test_index]
-            ) # (train_Y, train_X, test_Y, test_X)
-
-def div_dataset(dataframe,w2v_model,embedding_dim,train_size,max_seq_length=par.max_length):
-
-    range_list = np.array(range(dataframe.__len__()))
-
-    train_index = random.sample(range_list.tolist(), k=train_size)
-    train_index.sort()
-    #print(train_index)
-
-    mask_index = np.ones([dataframe.__len__()])
-    mask_index[train_index] = 0
-
-    test_index = range_list[mask_index == 1].tolist()
-    text_list = proccessing_util(w2v_model).preprossessing(dataframe['text'], embedding_dim, max_seq_length)
-    try:
-        class_list = np.array([classification[i] for i in dataframe['class']])
-    except:
-        return (text_list[train_index], text_list[test_index]) # (train_X, test_X)
-
-
-
-    #print(test_index)
-
-    #print(range_list[test_index].tolist())
-    return (class_list[train_index],
-            text_list[train_index],
-            class_list[test_index],
-            text_list[test_index],
-            [train_index,test_index]
-            ) # (train_Y, train_X, test_Y, test_X)
-
-def div_random_batch(batch_size,dataset_x,dataset_y):
-    total_size = len(dataset_x)
-    range_list = np.array(range(total_size))
-    while total_size < batch_size:
-        dataset_x += dataset_x
-        dataset_y += dataset_y
-        total_size *= 2
-    rand_index_list = random.sample(range_list.tolist(),k=batch_size)
-
-    return (dataset_x[rand_index_list],dataset_y[rand_index_list],rand_index_list)
 
 def one_hot(y,num_classes):
     targets = np.array([y]).reshape(-1)
