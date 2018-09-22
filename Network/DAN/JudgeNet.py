@@ -44,7 +44,7 @@ class Judge:
     def __build_rs__(self, s):
         stack = None
         with tf.variable_scope(self.net + '_conv_var',reuse=tf.AUTO_REUSE) and tf.device(tf_utils.gpu_mode(par.gpu)):
-            for i in range(3):
+            for i in range(2):
                 out = self.__conv_filtering__(i, s)
                 if stack is None:
                     stack = out
@@ -67,7 +67,7 @@ class Judge:
             activation=tf.nn.relu,
             name=net + '_conv_' + str(cycle),
         )
-        conv = layers.batch_norm(conv)
+        # conv = layers.batch_norm(conv)
         squeeze_and_max_pool = tf.squeeze(
             tf.layers.max_pooling1d(
                 conv,

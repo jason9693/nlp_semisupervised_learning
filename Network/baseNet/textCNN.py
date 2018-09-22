@@ -64,7 +64,7 @@ class TextCNN:
             name=net + '_conv_' + str(cycle),
         )
         #conv = tf.nn.dropout(conv, 1 - self.dropout)
-        conv = layers.batch_norm(conv)
+        # conv = layers.batch_norm(conv)
         squeeze_and_max_pool = tf.squeeze(
             tf.layers.max_pooling1d(
                 conv,
