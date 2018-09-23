@@ -48,8 +48,8 @@ class TextCNN:
             self.loss = tf.reduce_mean(
                 self.h
             )
-            self.out = tf.nn.softmax(self.class_logits, name='predict')
-            #self.out = self.class_logits
+            #self.out = tf.nn.softmax(self.class_logits, name='predict')
+            self.out = tf.nn.tanh(self.class_logits) * 0.5 + 0.5
         #self.optim = tf.train.AdamOptimizer(learning_rate=self.learning_rate).minimize(self.loss)
 
             # self.gan_logits = tf.reduce_logsumexp(self.class_logits, 1)
