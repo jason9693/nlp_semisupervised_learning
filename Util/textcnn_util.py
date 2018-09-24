@@ -2,6 +2,7 @@ import tensorflow as tf
 from tensorflow.python.keras.preprocessing.sequence import pad_sequences
 import pandas as pd
 import random
+import hanja
 import numpy as np
 from konlpy.tag import Okt as Twitter
 from gensim.models import Word2Vec as w2v
@@ -55,6 +56,7 @@ class proccessing_util:
         for text in text_list:
             tmp_list = []
             # nouns = twitter.nouns(text)
+            text = hanja.translate(text, mode='substitution')
             posses = self.twitter.pos(text, stem=True, norm=True)
 
             # for noun in nouns:
@@ -63,7 +65,7 @@ class proccessing_util:
             #         tmp_list.append(word2id[noun])
 
             for pos in posses:
-                if pos[1] in ['Noun', 'Verb', 'Adjective', 'Adverb', 'Exclamation', 'Determiner'] and pos[
+                if pos[1] not in ['Eomi', 'Punctuation', 'Hashtag','URL', 'PreEomi','Josa','Foreign'] and pos[
                     0] in self.word2id.keys():
                     tmp_list.append(self.word2id[pos[0]])
             # print(nouns)
