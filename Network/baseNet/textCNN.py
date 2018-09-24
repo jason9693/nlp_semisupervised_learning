@@ -32,7 +32,7 @@ class TextCNN:
                     stack = tf.concat([stack, out], axis=1)
 
         with tf.variable_scope(self.net + '_fc_layer', reuse=tf.AUTO_REUSE):
-            W1 = tf.get_variable('fc_w1',shape=[200,50], dtype=tf.float32)
+            W1 = tf.get_variable('fc_w1',shape=[800,50], dtype=tf.float32)
             b1 = tf.get_variable('fc_b1',shape=[50],dtype=tf.float32)
             stack = tf.matmul(stack,W1)+ b1
             stack = tf_utils.leaky_relu(stack,0.01)
@@ -58,7 +58,7 @@ class TextCNN:
         #print(self.reuse)
         conv = tf.layers.conv1d(
             inputs=tensor,
-            filters=100,
+            filters=400,
             kernel_size=[3 + cycle],
             padding='same',
             activation=tf_utils.leaky_relu,
