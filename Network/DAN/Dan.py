@@ -86,8 +86,8 @@ class DAN:
             learning_rate=self.learning_rate
         ).minimize(self.G_loss, var_list=P_varlist)
 
-        self.J_optim = tf.train.AdagradOptimizer(
-            learning_rate=self.learning_rate
+        self.J_optim = tf.train.AdamOptimizer(
+            learning_rate=self.learning_rate * 2
         ).minimize(self.D_loss, var_list=J_varlist)
 
         print('P_var: ')
