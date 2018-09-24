@@ -1,5 +1,5 @@
 import numpy as np
-learning_rate = 0.00005
+learning_rate = 1e-5
 num_classes = 6
 net='fake_data'
 ckpt_path='ckpt/save_model'
