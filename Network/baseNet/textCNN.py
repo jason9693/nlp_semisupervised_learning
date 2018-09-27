@@ -59,7 +59,7 @@ class TextCNN:
         conv = tf.layers.conv1d(
             inputs=tensor,
             filters=400,
-            kernel_size=[3 + cycle],
+            kernel_size=[3 + cycle * 2],
             padding='same',
             activation=tf_utils.leaky_relu,
             name=net + '_conv_' + str(cycle),
