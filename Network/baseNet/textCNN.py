@@ -101,19 +101,19 @@ class SupervisedClassification:
     def train(self, input, label, dropout=0):
         return self.sess.run(
             [self.optim, self.net.loss],
-            feed_dict={self.X: input, self.Y: label, self.net.dropout: dropout}
+            feed_dict={self.net.X: input, self.net.Y: label, self.net.dropout: dropout}
         )[1]
 
     def test(self, input, dropout=0):
         return self.sess.run(
             tf.argmax(self.net.out, axis=1),
-            feed_dict={self.X: input, self.net.dropout: 0}
+            feed_dict={self.net.X: input, self.net.dropout: 0}
         )
 
     def eval(self, input,y, dropout=0):
         predicts= self.sess.run(
             tf.argmax(self.net.out, axis=1),
-            feed_dict={self.X: input, self.net.dropout: 0}
+            feed_dict={self.net.X: input, self.net.dropout: 0}
         )
         accuracy = 0
         for i in range(len(predicts)):
@@ -125,14 +125,14 @@ class SupervisedClassification:
     def test_array(self, input, dropout=0):
         return self.sess.run(
             self.net.out,
-            feed_dict={self.X: input, self.net.dropout: 0}
+            feed_dict={self.net.X: input, self.net.dropout: 0}
         )
 
     def test_single_text(self, input, dropout=0):
         result = self.sess.run(
             tf.argmax(self.net.out, axis=1),
             feed_dict={
-                self.X: [input, input],
+                self.net.X: [input, input],
                 self.net.dropout: 0
             }
         )[0]
