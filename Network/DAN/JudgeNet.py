@@ -50,7 +50,7 @@ class Judge:
                 #print(s.shape)
                 s = out
         out = self.__conv_filtering__(3,s,is_last=True)
-        return tf.squeeze(out)
+        return out
         #with tf.variable_scope(self.net + '_fc_layer', reuse=tf.AUTO_REUSE):
 
             # W = tf.get_variable('fc_w', shape=[par.embedding_dim, par.embedding_dim], dtype=tf.float32,
@@ -79,6 +79,7 @@ class Judge:
                     name=net + '_maxpool1d_' + str(cycle))
             )
         else:
+            #conv = layers.batch_norm(conv)
             squeeze_and_max_pool = tf.layers.max_pooling1d(
                 conv,
                 #pool_size=[2,2],
