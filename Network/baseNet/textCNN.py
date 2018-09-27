@@ -55,7 +55,7 @@ class TextCNN:
             )
             self.out = tf.nn.softmax(self.class_logits, name='predict')
             labels = tf.one_hot(self.Y,depth=self.num_classes)
-            self.loss = tf.nn.softmax_cross_entropy_with_logits(logits=self.class_logits, labels=labels)
+            self.loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=self.class_logits, labels=labels))
             #self.out = tf.nn.tanh(self.class_logits) * 0.5 + 0.5
             #self.optim = tf.train.AdamOptimizer(learning_rate=self.learning_rate).minimize(self.loss)
 
