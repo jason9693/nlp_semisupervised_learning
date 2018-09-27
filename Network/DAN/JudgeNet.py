@@ -44,7 +44,7 @@ class Judge:
     def __build_rs__(self, s):
         stack = None
         with tf.variable_scope(self.net + '_conv_var',reuse=tf.AUTO_REUSE) and tf.device(tf_utils.gpu_mode(par.gpu)):
-            for i in range(2):
+            for i in range(4):
                 out = self.__conv_filtering__(i, s)
                 if stack is None:
                     stack = out
@@ -52,9 +52,16 @@ class Judge:
                     stack = tf.concat([stack, out], axis=1)
 
         with tf.variable_scope(self.net + '_fc_layer', reuse=tf.AUTO_REUSE):
-            W = tf.get_variable('fc_w', shape=[800, par.embedding_dim], dtype=tf.float32, initializer=layers.xavier_initializer())
-            b = tf.get_variable('fc_b', shape=[par.embedding_dim, ], dtype=tf.float32)
 
+            W1 = tf.get_variable('fc_w1', shape=[1600, 800], dtype=tf.float32)
+            b1 = tf.get_variable('fc_b1', shape=[800], dtype=tf.float32)
+
+            stack = tf.matmul(stack, W1) + b1
+            stack = tf_utils.leaky_relu(stack, 0.01)
+
+            W = tf.get_variable('fc_w', shape=[800, par.embedding_dim], dtype=tf.float32,
+                                initializer=layers.xavier_initializer())
+            b = tf.get_variable('fc_b', shape=[par.embedding_dim, ], dtype=tf.float32)
             return tf.matmul(stack, W) + b #activation func?
 
     def __conv_filtering__(self, cycle, tensor, net='window'):
@@ -62,9 +69,9 @@ class Judge:
         conv = tf.layers.conv1d(
             inputs=tensor,
             filters=400,
-            kernel_size=[3 + cycle * 2],
+            kernel_size=[2 + cycle],
             padding='same',
-            activation=tf.nn.relu,
+            #activation=tf.nn.relu,
             name=net + '_conv_' + str(cycle),
         )
         # conv = layers.batch_norm(conv)

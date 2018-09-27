@@ -24,7 +24,7 @@ class TextCNN:
                 self.Y = tf.placeholder(dtype=tf.uint8, shape=[None, ])
             stack = None
         with tf.variable_scope(self.net + '_conv_var',reuse=tf.AUTO_REUSE):# reuse=self.reuse):
-            for i in range(2):
+            for i in range(4):
                 out = self.__conv_filtering__(i, self.X)
                 if stack is None:
                     stack = out
@@ -32,12 +32,17 @@ class TextCNN:
                     stack = tf.concat([stack, out], axis=1)
 
         with tf.variable_scope(self.net + '_fc_layer', reuse=tf.AUTO_REUSE):
-            W1 = tf.get_variable('fc_w1',shape=[800,50], dtype=tf.float32)
-            b1 = tf.get_variable('fc_b1',shape=[50],dtype=tf.float32)
+            W1 = tf.get_variable('fc_w1',shape=[1600,800], dtype=tf.float32)
+            b1 = tf.get_variable('fc_b1',shape=[800],dtype=tf.float32)
             stack = tf.matmul(stack,W1)+ b1
             stack = tf_utils.leaky_relu(stack,0.01)
 
-            W = tf.get_variable('fc_w', shape=[50, self.num_classes], dtype=tf.float32)
+            W2 = tf.get_variable('fc_w2', shape=[800, 800], dtype=tf.float32)
+            b2 = tf.get_variable('fc_b2', shape=[800], dtype=tf.float32)
+            stack = tf.matmul(stack, W2) + b2
+            stack = tf_utils.leaky_relu(stack, 0.01)
+
+            W = tf.get_variable('fc_w', shape=[800, self.num_classes], dtype=tf.float32)
             b = tf.get_variable('fc_b', shape=[self.num_classes, ], dtype=tf.float32)
 
             self.class_logits = tf.matmul(stack, W) + b
@@ -59,7 +64,7 @@ class TextCNN:
         conv = tf.layers.conv1d(
             inputs=tensor,
             filters=400,
-            kernel_size=[3 + cycle * 2],
+            kernel_size=[2 + cycle],
             padding='same',
             activation=tf_utils.leaky_relu,
             name=net + '_conv_' + str(cycle),
