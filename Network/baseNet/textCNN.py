@@ -66,7 +66,7 @@ class TextCNN:
             filters=400,
             kernel_size=[2 + cycle],
             padding='same',
-            activation=tf_utils.leaky_relu,
+            activation=tf.nn.leaky_relu,
             name=net + '_conv_' + str(cycle),
         )
         #conv = tf.nn.dropout(conv, 1 - self.dropout)

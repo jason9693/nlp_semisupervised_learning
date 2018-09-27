@@ -42,36 +42,29 @@ class Judge:
         return (tf.matmul(y,W), tf.matmul(1-y,W)) #(rpos,rneg)
 
     def __build_rs__(self, s):
-        stack = None
+        #stack = None
+        out=None
         with tf.variable_scope(self.net + '_conv_var',reuse=tf.AUTO_REUSE) and tf.device(tf_utils.gpu_mode(par.gpu)):
             for i in range(4):
                 out = self.__conv_filtering__(i, s)
-                if stack is None:
-                    stack = out
-                else:
-                    stack = tf.concat([stack, out], axis=1)
+                s = out
 
-        with tf.variable_scope(self.net + '_fc_layer', reuse=tf.AUTO_REUSE):
+        return out
+        #with tf.variable_scope(self.net + '_fc_layer', reuse=tf.AUTO_REUSE):
 
-            W1 = tf.get_variable('fc_w1', shape=[1600, 800], dtype=tf.float32)
-            b1 = tf.get_variable('fc_b1', shape=[800], dtype=tf.float32)
-
-            stack = tf.matmul(stack, W1) + b1
-            stack = tf_utils.leaky_relu(stack, 0.01)
-
-            W = tf.get_variable('fc_w', shape=[800, par.embedding_dim], dtype=tf.float32,
-                                initializer=layers.xavier_initializer())
-            b = tf.get_variable('fc_b', shape=[par.embedding_dim, ], dtype=tf.float32)
-            return tf.matmul(stack, W) + b #activation func?
+            # W = tf.get_variable('fc_w', shape=[par.embedding_dim, par.embedding_dim], dtype=tf.float32,
+            #                     initializer=layers.xavier_initializer())
+            # b = tf.get_variable('fc_b', shape=[par.embedding_dim, ], dtype=tf.float32)
+            # return tf.matmul(stack, W) + b #activation func?
 
     def __conv_filtering__(self, cycle, tensor, net='window'):
         #print(self.reuse)
         conv = tf.layers.conv1d(
             inputs=tensor,
-            filters=400,
+            filters=par.embedding_dim,
             kernel_size=[2 + cycle],
             padding='same',
-            #activation=tf.nn.relu,
+            activation=tf.nn.leaky_relu,
             name=net + '_conv_' + str(cycle),
         )
         # conv = layers.batch_norm(conv)
