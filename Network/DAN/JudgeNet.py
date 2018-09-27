@@ -45,11 +45,12 @@ class Judge:
         #stack = None
         out=None
         with tf.variable_scope(self.net + '_conv_var',reuse=tf.AUTO_REUSE) and tf.device(tf_utils.gpu_mode(par.gpu)):
-            for i in range(4):
+            for i in range(3):
                 out = self.__conv_filtering__(i, s)
+                #print(s.shape)
                 s = out
-
-        return out
+        out = self.__conv_filtering__(3,s,is_last=True)
+        return tf.squeeze(out)
         #with tf.variable_scope(self.net + '_fc_layer', reuse=tf.AUTO_REUSE):
 
             # W = tf.get_variable('fc_w', shape=[par.embedding_dim, par.embedding_dim], dtype=tf.float32,
@@ -57,7 +58,7 @@ class Judge:
             # b = tf.get_variable('fc_b', shape=[par.embedding_dim, ], dtype=tf.float32)
             # return tf.matmul(stack, W) + b #activation func?
 
-    def __conv_filtering__(self, cycle, tensor, net='window'):
+    def __conv_filtering__(self, cycle, tensor, net='window', is_last = False):
         #print(self.reuse)
         conv = tf.layers.conv1d(
             inputs=tensor,
@@ -68,14 +69,24 @@ class Judge:
             name=net + '_conv_' + str(cycle),
         )
         # conv = layers.batch_norm(conv)
-        squeeze_and_max_pool = tf.squeeze(
-            tf.layers.max_pooling1d(
+        if is_last:
+            squeeze_and_max_pool = tf.squeeze(
+                tf.layers.max_pooling1d(
+                    conv,
+                    pool_size=[par.max_length],
+                    padding='valid',
+                    strides=1,
+                    name=net + '_maxpool1d_' + str(cycle))
+            )
+        else:
+            squeeze_and_max_pool = tf.layers.max_pooling1d(
                 conv,
+                #pool_size=[2,2],
                 pool_size=[par.max_length],
-                padding='valid',
+                padding='same',
                 strides=1,
                 name=net + '_maxpool1d_' + str(cycle))
-        )
+
         return squeeze_and_max_pool
 
     def __residual__(self, cycle, layer, tensor):
