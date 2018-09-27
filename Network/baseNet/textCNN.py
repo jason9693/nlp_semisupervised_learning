@@ -98,22 +98,22 @@ class SupervisedClassification:
         self.sess = sess
         self.optim = tf.train.AdamOptimizer(learning_rate=self.learning_rate).minimize(self.net.loss)
 
-    def train(self, input, label, dropout=0):
+    def train(self, input, label):
         return self.sess.run(
             [self.optim, self.net.loss],
-            feed_dict={self.net.X: input, self.net.Y: label, self.net.dropout: dropout}
+            feed_dict={self.net.X: input, self.net.Y: label}
         )[1]
 
-    def test(self, input, dropout=0):
+    def test(self, input):
         return self.sess.run(
             tf.argmax(self.net.out, axis=1),
-            feed_dict={self.net.X: input, self.net.dropout: 0}
+            feed_dict={self.net.X: input}
         )
 
     def eval(self, input,y, dropout=0):
         predicts= self.sess.run(
             tf.argmax(self.net.out, axis=1),
-            feed_dict={self.net.X: input, self.net.dropout: 0}
+            feed_dict={self.net.X: input}
         )
         accuracy = 0
         for i in range(len(predicts)):
@@ -122,18 +122,17 @@ class SupervisedClassification:
 
         return accuracy / len(predicts)
 
-    def test_array(self, input, dropout=0):
+    def test_array(self, input):
         return self.sess.run(
             self.net.out,
-            feed_dict={self.net.X: input, self.net.dropout: 0}
+            feed_dict={self.net.X: input}
         )
 
     def test_single_text(self, input, dropout=0):
         result = self.sess.run(
             tf.argmax(self.net.out, axis=1),
             feed_dict={
-                self.net.X: [input, input],
-                self.net.dropout: 0
+                self.net.X: [input, input]
             }
         )[0]
 
