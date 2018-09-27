@@ -19,7 +19,7 @@ class TextCNN:
             self.dropout = 0.0
             #tf.placeholder(dtype=tf.float32, shape=(), name='dropout_scalar')
             if self.X is None:
-                self.X = tf.placeholder(shape=self.input_shape, dtype=tf.float64, name='X')
+                self.X = tf.placeholder(shape=self.input_shape, dtype=tf.float32, name='X')
             if self.Y is None:
                 self.Y = tf.placeholder(dtype=tf.uint8, shape=[None, ])
             stack = None
@@ -54,10 +54,10 @@ class TextCNN:
                 self.h
             )
             self.out = tf.nn.softmax(self.class_logits, name='predict')
-
-            self.loss = tf.nn.softmax_cross_entropy_with_logits(logits=self.class_logits, labels=tf.one_hot(self.Y))
+            labels = tf.one_hot(self.Y,depth=self.num_classes)
+            self.loss = tf.nn.softmax_cross_entropy_with_logits(logits=self.class_logits, labels=labels)
             #self.out = tf.nn.tanh(self.class_logits) * 0.5 + 0.5
-            self.optim = tf.train.AdamOptimizer(learning_rate=self.learning_rate).minimize(self.loss)
+            #self.optim = tf.train.AdamOptimizer(learning_rate=self.learning_rate).minimize(self.loss)
 
             # self.gan_logits = tf.reduce_logsumexp(self.class_logits, 1)
 
@@ -96,10 +96,11 @@ class SupervisedClassification:
         self.Y = Y
         self.net = TextCNN(learning_rate,input_shape,num_classes,net,reuse,X,Y)
         self.sess = sess
+        self.optim = tf.train.AdamOptimizer(learning_rate=self.learning_rate).minimize(self.net.loss)
 
     def train(self, input, label, dropout=0):
         return self.sess.run(
-            [self.net.optim, self.net.loss],
+            [self.optim, self.net.loss],
             feed_dict={self.X: input, self.Y: label, self.net.dropout: dropout}
         )[1]
 
