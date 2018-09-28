@@ -78,17 +78,9 @@ class Judge:
                     strides=1,
                     name=net + '_maxpool1d_' + str(cycle))
             )
-        else:
-            #conv = layers.batch_norm(conv)
-            squeeze_and_max_pool = tf.layers.max_pooling1d(
-                conv,
-                #pool_size=[2,2],
-                pool_size=[par.max_length],
-                padding='same',
-                strides=1,
-                name=net + '_maxpool1d_' + str(cycle))
+            return squeeze_and_max_pool
 
-        return squeeze_and_max_pool
+        return conv
 
     def __residual__(self, cycle, layer, tensor):
         conv = tf.layers.conv2d(
