@@ -68,19 +68,17 @@ class DAN:
         self.J = self.JudgeNet(x=self.labeled_s, y=self.label)
 
         real_label = tf.ones_like(self.P_j.logits)
-        fake_label = tf.zeros_like(self.P_j.logits)
 
-        D_loss_fake = tf.nn.sigmoid_cross_entropy_with_logits(logits=self.P_j.logits, labels=fake_label)
-        D_loss_real = tf.nn.sigmoid_cross_entropy_with_logits(logits=self.J.logits, labels=real_label)
+        D_loss_fake = tf.nn.sigmoid_cross_entropy_with_logits(logits=self.P_j.logits, labels=tf.zeros_like(self.P_j.logits))
+        D_loss_real = tf.nn.sigmoid_cross_entropy_with_logits(logits=self.J.logits, labels=tf.ones_like(self.J.logits))
 
-        # self.D_loss = tf.reduce_mean(D_loss_fake + D_loss_real)
-        self.D_loss = tf.reduce_mean(D_loss_real)
+        self.D_loss = tf.reduce_mean(D_loss_fake) + tf.reduce_mean(D_loss_real)
+        #self.D_loss = tf.reduce_mean(D_loss_real)
 
 
         self.G_loss = tf.nn.sigmoid_cross_entropy_with_logits(logits=self.P_j.logits, labels=real_label)
+        # self.G_loss = tf.reduce_mean(self.G_loss)
         self.G_loss = tf.reduce_mean(self.G_loss)
-
-        #self.G_loss = tf.reduce_mean(self.G_loss)
         #self.loss = tf.nn.sigmoid_cross_entropy_with_logits(logits=self.)
 
         variables = tf.global_variables()
