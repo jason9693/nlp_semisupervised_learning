@@ -26,7 +26,7 @@ class Judge:
         rneg = tf.expand_dims(rneg, 2)
         U = tf.get_variable(name='U',shape=[par.embedding_dim,par.embedding_dim], dtype=tf.float32, initializer=layers.xavier_initializer())
         rsU = tf.expand_dims(
-            tf.nn.relu(tf.matmul(rs, U)),
+            tf.matmul(rs, U),
             1
         )
         logits = tf.matmul(rsU, rpos) - tf.matmul(rsU, rneg)
