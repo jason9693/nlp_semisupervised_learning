@@ -42,7 +42,7 @@ class proccessing_util:
 
         return zero_padding
 
-    def preprossessing(self,text_list, embedding_dim, maxlen=par.max_length, model=None):
+    def preprossessing(self, text_list, embedding_dim, maxlen=par.max_length, model=None, mode='default'):
         EMBEDDING_DIM = embedding_dim
         # MAX_SEQ_LENGTH = 50
         if model is not None:
@@ -51,23 +51,23 @@ class proccessing_util:
         for k in self.word2id:
             embedding_matrix[self.word2id[k]] = self.model.wv[k]
 
-
         index_list = []
         for text in text_list:
             tmp_list = []
             # nouns = twitter.nouns(text)
             text = hanja.translate(text, mode='substitution')
-            posses = self.twitter.pos(text, stem=True, norm=True)
+            if mode == 'default':
+                posses = self.twitter.pos(text, stem=True, norm=True)
 
-            # for noun in nouns:
-            #
-            #     if noun in word2id.keys():
-            #         tmp_list.append(word2id[noun])
-
-            for pos in posses:
-                if pos[1] not in ['Eomi', 'Punctuation', 'Hashtag','URL', 'PreEomi','Josa','Foreign'] and pos[
-                    0] in self.word2id.keys():
-                    tmp_list.append(self.word2id[pos[0]])
+                for pos in posses:
+                    if pos[1] not in ['Eomi', 'Punctuation', 'Hashtag', 'URL', 'PreEomi', 'Josa', 'Foreign'] and\
+                            pos[0] in self.word2id.keys():
+                        tmp_list.append(self.word2id[pos[0]])
+            else:
+                posses = self.twitter.nouns(text)
+                for pos in posses:
+                    if pos in self.word2id.keys():
+                        tmp_list.append(self.word2id[pos])
             # print(nouns)
             # print(embedding_matrix[tmp_list])
             index_list.append(tmp_list)
