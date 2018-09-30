@@ -49,7 +49,7 @@ class Judge:
                 out = self.__conv_filtering__(i, s)
                 #print(s.shape)
                 s = out
-        out = self.__conv_filtering__(3,s,is_last=True)
+            out = self.__conv_filtering__(3,s,is_last=True)
         return out
         #with tf.variable_scope(self.net + '_fc_layer', reuse=tf.AUTO_REUSE):
 
