@@ -45,10 +45,10 @@ class Judge:
         #stack = None
         out=None
         with tf.variable_scope(self.net + '_conv_var',reuse=tf.AUTO_REUSE) and tf.device(tf_utils.gpu_mode(par.gpu)):
-            for i in range(3):
-                out = self.__conv_filtering__(i, s)
-                #print(s.shape)
-                s = out
+            # for i in range(3):
+            #     out = self.__conv_filtering__(i, s)
+            #     #print(s.shape)
+            #     s = out
             out = self.__conv_filtering__(3,s,is_last=True)
         return out
         #with tf.variable_scope(self.net + '_fc_layer', reuse=tf.AUTO_REUSE):
