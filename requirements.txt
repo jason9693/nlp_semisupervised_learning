@@ -4,7 +4,7 @@ Pillow==5.2.0
 gensim==3.5.0
 konlpy==0.5.1
 matplotlib==2.2.2
-numpy==1.15.0
+numpy==1.22.0
 pandas==0.23.4
 prettytensor==0.7.4
 scipy==1.1.0
