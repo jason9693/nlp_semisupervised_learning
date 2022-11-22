@@ -1,6 +1,6 @@
 tensorflow==1.7.0
 JPype1==0.6.3
-Pillow==5.2.0
+Pillow==9.3.0
 gensim==3.5.0
 konlpy==0.5.1
 matplotlib==2.2.2
